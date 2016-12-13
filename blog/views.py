@@ -76,5 +76,12 @@ def edit_entry_put(id):
     return redirect(url_for("entries"))
     
     
+@app.route("/entry/<id>/delete")
+def delete_entry_delete(id):
+    entry = session.query(Entry).get(id)
+    
+    session.delete(entry)
+    session.commit()
+    return redirect(url_for("entries"))
 
     
