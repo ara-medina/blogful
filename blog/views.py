@@ -9,14 +9,19 @@ PAGINATE_BY = 10
 @app.route("/")
 @app.route("/page/<int:page>")
 def entries(page=1):
+    if request.args.get('limit'):
+        paginate_by = int(request.args.get('limit'))
+    else:
+        paginate_by = 10
+    
     page_index = page - 1
     
     count = session.query(Entry).count()
     
-    start = page_index * PAGINATE_BY
-    end = start + PAGINATE_BY
+    start = page_index * paginate_by
+    end = start + paginate_by
     
-    total_pages = (count - 1) // PAGINATE_BY + 1
+    total_pages = (count - 1) // paginate_by + 1
     has_next = page_index < total_pages - 1
     has_prev = page_index > 0
     
@@ -84,4 +89,3 @@ def delete_entry_delete(id):
     session.commit()
     return redirect(url_for("entries"))
 
-    
