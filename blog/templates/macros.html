@@ -7,6 +7,9 @@
                 {{ entry.datetime | dateformat("%d/%m/%y") }}
             </li>
             <li>
+                {{ entry.author.name }}
+            </li>
+            <li>
                 <a href="/entry/{{ entry.id }}/edit">
                     edit
                 </a>
