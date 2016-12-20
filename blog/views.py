@@ -2,6 +2,7 @@ from flask import render_template
 from flask import request, redirect, url_for
 from flask import flash
 from flask_login import login_user
+from flask_login import logout_user
 from werkzeug.security import check_password_hash
 from flask.ext.login import login_required
 from flask.ext.login import current_user
@@ -72,6 +73,7 @@ def single_entry(id):
     )
     
 @app.route("/entry/<id>/edit", methods=["GET"])
+@login_required
 def edit_entry_get(id):
     entry = session.query(Entry).get(id)
     
@@ -80,6 +82,7 @@ def edit_entry_get(id):
     )
     
 @app.route("/entry/<id>/edit",  methods=["POST"])
+@login_required
 def edit_entry_put(id):
     entry = session.query(Entry).get(id)
     
@@ -91,6 +94,7 @@ def edit_entry_put(id):
     
     
 @app.route("/entry/<id>/delete")
+@login_required
 def delete_entry_delete(id):
     entry = session.query(Entry).get(id)
     
@@ -112,4 +116,9 @@ def login_post():
         return redirect(url_for("login_get"))
 
     login_user(user)
+    return redirect(request.args.get('next') or url_for("entries"))
+    
+@app.route("/logout")
+def logout():
+    logout_user()
     return redirect(request.args.get('next') or url_for("entries"))
