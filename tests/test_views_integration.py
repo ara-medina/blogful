@@ -73,6 +73,25 @@ class TestViews(unittest.TestCase):
         self.assertEqual(entry.title, "New Test Post")
         self.assertEqual(entry.content, "New Test Content")
         
+    def test_delete_entry(self):
+        entry = Entry(title="Test Post", content="Test Content", author=self.user)
+        session.add(entry)
+        session.commit()
+        
+        self.simulate_login()
+        
+        response = self.client.delete("entry/{}/delete".format(entry.id))
+        
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(urlparse(response.location).path, "/")
+        
+        entries = session.query(Entry).all()
+        entry = entries[0]
+        
+        self.assertEqual(len(entries), 0)
+        self.assertEqual(entry.title, "")
+        self.assertEqual(entry.content, "")
+        
         
         
 if __name__ == "__main__":
